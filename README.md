@@ -1,14 +1,8 @@
 # Microsoft Partner Center Broker
 
-A library that lets you use the Microsoft Partner Center DevCenter APIs to manage your UWP application submissions. application submissions.
+A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your UWP application submissions.
 
-Documentation
-
-* [Home](./docs/index.html) 
-* API Reference
-  * [DevCenter Class](./docs/classes/_index_.devcenter.html)
-  * [Interfaces](./docs/modules/_interfaces_.html)
-  * [Converters](./docs/modules/_converters_.html)
+Take a look at the [Documentation and API Reference](https://lancemccarthy.github.io/PartnerCenterBroker/) for the latest info.
   
 ## Usage
 
@@ -37,7 +31,7 @@ const devCenter = new storeSdk.DevCenter(tenantId, clientId, clientSecret);
 
 #### Methods
 
-Currently there are several methods:
+Once you have a valid `DevCenter` instance, you can start making API calls. Here are some of the available methods and what they do:
 
 ```typescript
 
@@ -60,11 +54,11 @@ const commitSubmissionResult = await devCenter.CommitSubmission(appId, submissio
 const getSubmissionStatusResult = await devCenter.DeleteSubmission(appId, submissionId);
 ```
 
-### Uploading assets
+##### Uploading Assets
 
-When you start a submission, you get an SAS storage URL in the `CommitSubmissionResult`. That is the location you need to upload the application's packages and data.
+When you start a submission, you will get an SAS storage URL in the `CommitSubmissionResult.fileUploadUrl` value. That is the location you need to upload the application's packages and data. The best way to approach this is to use the Azure Store SDK (**'@azure/storage-blob'**) and use `BlockBlobClient`. 
 
-Here's is an easy way to use Azure Storage package to do that:
+Here's an example:
 
 ```typescript
 // Import the Azure BlobStorage SDK
@@ -121,22 +115,21 @@ To get those values:
 
 #### Step 1
 
-![Step One](./.images/ServicePrincipal1.png)
+![Step One](https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal1.png)
 
 #### Step 2
 
-![Step Two](./.images/ServicePrincipal2.png)
+![Step Two](https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal2.png)
 
 #### Step 3
 
-![Step Three](./.images/ServicePrincipal3.png)
+![Step Three](https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal3.png)
 
 ## Getting the App ID
 
 Go to Microsoft [Partner Center Developer Dashboard](https://partner.microsoft.com/en-us/dashboard/windows/overview) and navigate to your app's page. Once there, open the *Product Management > Product Identity* pane.
 
-![Find App ID](./.images/FindAppId.png)
+![Find App ID](https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/FindAppId.png)
 
 ## API Reference
 
-See [API Reference Documentation](https://github.com/LanceMcCarthy/Action-MicrosoftPartnerCenter/docs)
