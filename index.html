@@ -67,17 +67,8 @@
 				<a href="#microsoft-partner-center-broker" id="microsoft-partner-center-broker" style="color: inherit; text-decoration: none;">
 					<h1>Microsoft Partner Center Broker</h1>
 				</a>
-				<p>A library that lets you use the Microsoft Partner Center DevCenter APIs to manage your UWP application submissions. application submissions.</p>
-				<p>Documentation</p>
-				<ul>
-					<li><a href="./docs/index.html">Home</a> </li>
-					<li>API Reference<ul>
-							<li><a href="./docs/classes/_index_.devcenter.html">DevCenter Class</a></li>
-							<li><a href="./docs/modules/_interfaces_.html">Interfaces</a></li>
-							<li><a href="./docs/modules/_converters_.html">Converters</a></li>
-						</ul>
-					</li>
-				</ul>
+				<p>A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your UWP application submissions.</p>
+				<p>Take a look at the <a href="https://lancemccarthy.github.io/PartnerCenterBroker/">Documentation and API Reference</a> for the latest info.</p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
@@ -103,7 +94,7 @@
 				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
 					<h4>Methods</h4>
 				</a>
-				<p>Currently there are several methods:</p>
+				<p>Once you have a valid <code>DevCenter</code> instance, you can start making API calls. Here are some of the available methods and what they do:</p>
 				<pre><code class="language-typescript">
 <span class="hljs-comment">// To get an application&#x27;s information (returns type of AppResourceResult)</span>
 <span class="hljs-keyword">const</span> appInfo = <span class="hljs-keyword">await</span> devCenter.GetAppInfo(appId);
@@ -123,10 +114,10 @@
 <span class="hljs-comment">// Delete a submission (returns type of boolean)</span>
 <span class="hljs-keyword">const</span> getSubmissionStatusResult = <span class="hljs-keyword">await</span> devCenter.DeleteSubmission(appId, submissionId);</code></pre>
 				<a href="#uploading-assets" id="uploading-assets" style="color: inherit; text-decoration: none;">
-					<h3>Uploading assets</h3>
+					<h5>Uploading Assets</h5>
 				</a>
-				<p>When you start a submission, you get an SAS storage URL in the <code>CommitSubmissionResult</code>. That is the location you need to upload the application&#39;s packages and data.</p>
-				<p>Here&#39;s is an easy way to use Azure Storage package to do that:</p>
+				<p>When you start a submission, you will get an SAS storage URL in the <code>CommitSubmissionResult.fileUploadUrl</code> value. That is the location you need to upload the application&#39;s packages and data. The best way to approach this is to use the Azure Store SDK (<strong>&#39;@azure/storage-blob&#39;</strong>) and use <code>BlockBlobClient</code>. </p>
+				<p>Here&#39;s an example:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// Import the Azure BlobStorage SDK</span>
 <span class="hljs-keyword">import</span> { BlockBlobClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@azure/storage-blob&#x27;</span>
 
@@ -185,24 +176,23 @@
 				<a href="#step-1" id="step-1" style="color: inherit; text-decoration: none;">
 					<h4>Step 1</h4>
 				</a>
-				<p><img src="./.images/ServicePrincipal1.png" alt="Step One"></p>
+				<p><img src="https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal1.png" alt="Step One"></p>
 				<a href="#step-2" id="step-2" style="color: inherit; text-decoration: none;">
 					<h4>Step 2</h4>
 				</a>
-				<p><img src="./.images/ServicePrincipal2.png" alt="Step Two"></p>
+				<p><img src="https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal2.png" alt="Step Two"></p>
 				<a href="#step-3" id="step-3" style="color: inherit; text-decoration: none;">
 					<h4>Step 3</h4>
 				</a>
-				<p><img src="./.images/ServicePrincipal3.png" alt="Step Three"></p>
+				<p><img src="https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/ServicePrincipal3.png" alt="Step Three"></p>
 				<a href="#getting-the-app-id" id="getting-the-app-id" style="color: inherit; text-decoration: none;">
 					<h2>Getting the App ID</h2>
 				</a>
 				<p>Go to Microsoft <a href="https://partner.microsoft.com/en-us/dashboard/windows/overview">Partner Center Developer Dashboard</a> and navigate to your app&#39;s page. Once there, open the <em>Product Management &gt; Product Identity</em> pane.</p>
-				<p><img src="./.images/FindAppId.png" alt="Find App ID"></p>
+				<p><img src="https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/FindAppId.png" alt="Find App ID"></p>
 				<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
 					<h2>API Reference</h2>
 				</a>
-				<p>See <a href="https://github.com/LanceMcCarthy/Action-MicrosoftPartnerCenter/docs">API Reference Documentation</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
