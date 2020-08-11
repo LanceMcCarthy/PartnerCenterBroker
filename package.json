@@ -1,0 +1,38 @@
+{
+  "name": "partnercenterbroker",
+  "version": "1.0.0",
+  "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LanceMcCarthy/PartnerCenterBroker.git"
+  },
+  "keywords": [
+    "StoreBroker",
+    "Microsoft",
+    "Partner",
+    "Center",
+    "PartnerCenter",
+    "Microsoft",
+    "Store",
+    "API",
+    "Microsoft",
+    "Store",
+    "DevCenter",
+    "DevCenter",
+    "API"
+  ],
+  "author": "Lance McCarthy",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/LanceMcCarthy/PartnerCenterBroker/issues"
+  },
+  "homepage": "https://github.com/LanceMcCarthy/PartnerCenterBroker#readme",
+  "devDependencies": {
+    "tslint": "^6.1.3",
+    "typescript": "^3.9.7"
+  }
+}
