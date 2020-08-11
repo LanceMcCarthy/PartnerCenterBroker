@@ -1,9 +1,10 @@
 {
-  "name": "partner-center-broker",
+  "name": "@lancemccarthy/partner-center-broker",
   "version": "1.0.0",
   "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "scripts": {
     "clean-lib": "rimraf lib",
     "build": "npm run clean-lib && tsc",
@@ -15,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LanceMcCarthy/PartnerCenterBroker.git"
+    "url": "git://github.com/LanceMcCarthy/PartnerCenterBroker.git"
   },
   "keywords": [
     "StoreBroker",
