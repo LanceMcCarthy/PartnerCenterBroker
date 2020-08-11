@@ -12,7 +12,8 @@
     "format-write": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "prep": "npm run build && npm run format-check",
-    "package": "npm run build && npm run docs && npm pack"
+    "package": "npm run build && npm run docs && npm pack",
+    "publish" : "npm run package && npm publish"
   },
   "repository": {
     "type": "git",
