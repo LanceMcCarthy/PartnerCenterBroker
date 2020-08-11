@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>partnercenterbroker</title>
-	<meta name="description" content="Documentation for partnercenterbroker">
+	<title>partner-center-broker</title>
+	<meta name="description" content="Documentation for partner-center-broker">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">partnercenterbroker</a>
+					<a href="index.html" class="title">partner-center-broker</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>partnercenterbroker</h1>
+			<h1>partner-center-broker</h1>
 		</div>
 	</div>
 </header>
@@ -64,10 +64,135 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#partnercenterbroker" id="partnercenterbroker" style="color: inherit; text-decoration: none;">
-					<h1>PartnerCenterBroker</h1>
+				<a href="#microsoft-partner-center-broker" id="microsoft-partner-center-broker" style="color: inherit; text-decoration: none;">
+					<h1>Microsoft Partner Center Broker</h1>
 				</a>
 				<p>A package that lets you programmatically interact with the Microsoft Partner Center APIs to manage your application submissions.</p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>You will need the following 4 pieces of information to use this:</p>
+				<ul>
+					<li>A Service Principal&#39;s <strong>Tenant ID</strong>, <strong>Client ID</strong> and <strong>Client Secret</strong> (if you do not have this already, see the Authentication or  section below)</li>
+					<li>Your app&#39;s <strong>App ID</strong> (aka &#39;Store ID&#39; in DevCenter). If youdo not know this, see the Screenshots section below.</li>
+				</ul>
+				<p>If you dfo not have any of the above, see the <strong>Quick-Start by Screenshots</strong> section below.</p>
+				<a href="#code" id="code" style="color: inherit; text-decoration: none;">
+					<h3>Code</h3>
+				</a>
+				<p>Once you have your Tenant ID, Client ID and client Secret, you can initialize the DevCenter object</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { DevCenter } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@LanceMcCarthy/partner-center-broker&#x27;</span>
+
+<span class="hljs-keyword">const</span> appId = <span class="hljs-string">&quot;&quot;</span>;
+<span class="hljs-keyword">const</span> tenantId = <span class="hljs-string">&quot;&quot;</span>;
+<span class="hljs-keyword">const</span> clientId = <span class="hljs-string">&quot;&quot;</span>;
+<span class="hljs-keyword">const</span> clientSecret = <span class="hljs-string">&quot;&quot;</span>;
+
+<span class="hljs-comment">// Instantiate a DevCenter object</span>
+<span class="hljs-keyword">const</span> devCenter = <span class="hljs-keyword">new</span> storeSdk.DevCenter(tenantId, clientId, clientSecret);</code></pre>
+				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+					<h4>Methods</h4>
+				</a>
+				<p>Currently there are several methods:</p>
+				<pre><code class="language-typescript">
+<span class="hljs-comment">// To get an application&#x27;s information (returns type of AppResourceResult)</span>
+<span class="hljs-keyword">const</span> appInfo = <span class="hljs-keyword">await</span> devCenter.GetAppInfo(appId);
+
+<span class="hljs-comment">// To create a submission (returns type of CommitSubmissionResult). See &#x27;Upload Assets&#x27; code example for more information about how to use this result.</span>
+<span class="hljs-keyword">const</span> createSubmissionResult = <span class="hljs-keyword">await</span> devCenter.CreateAppSubmission(appId);
+
+<span class="hljs-comment">// Grab the submission ID for use in the rest of the workflow</span>
+<span class="hljs-keyword">const</span> submissionId = createSubmissionResult.Id;
+
+<span class="hljs-comment">// Get a existing application&#x27;s submission information (returns type of GetSubmissionResult)</span>
+<span class="hljs-keyword">const</span> getSubmissionResult = <span class="hljs-keyword">await</span> devCenter.GetSubmission(appId, submissionId);
+
+<span class="hljs-comment">// Commit a submission for review (returns type of AppResourceResult)</span>
+<span class="hljs-keyword">const</span> commitSubmissionResult = <span class="hljs-keyword">await</span> devCenter.CommitSubmission(appId, submissionId);
+
+<span class="hljs-comment">// Delete a submission (returns type of boolean)</span>
+<span class="hljs-keyword">const</span> getSubmissionStatusResult = <span class="hljs-keyword">await</span> devCenter.DeleteSubmission(appId, submissionId);</code></pre>
+				<a href="#uploading-assets" id="uploading-assets" style="color: inherit; text-decoration: none;">
+					<h3>Uploading assets</h3>
+				</a>
+				<p>When you start a submission, you get an SAS storage URL in the <code>CommitSubmissionResult</code>. That is the location you need to upload the application&#39;s packages and data.</p>
+				<p>Here&#39;s is an easy way to use Azure Storage package to do that:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// Import the Azure BlobStorage SDK</span>
+<span class="hljs-keyword">import</span> { BlockBlobClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@azure/storage-blob&#x27;</span>
+
+<span class="hljs-comment">// After you start the submission, it returns an SAS url in the result.</span>
+<span class="hljs-keyword">const</span> startSubmissionResult = <span class="hljs-keyword">await</span> devCenter.CreateAppSubmission(appId);
+
+<span class="hljs-comment">// the pre-authenticated SAS url can be used to create a client</span>
+<span class="hljs-keyword">const</span> blobClient = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> BlockBlobClient(startSubmissionResult.fileUploadUrl);
+
+<span class="hljs-comment">// Upload the packages and data</span>
+<span class="hljs-keyword">await</span> blobClient.uploadFile(packageFile);
+</code></pre>
+				<a href="#authentication" id="authentication" style="color: inherit; text-decoration: none;">
+					<h2>Authentication</h2>
+				</a>
+				<p>For a more robust explanation of how to create this information, visit the Microsoft Store Broker documentation&#39;s <a href="https://github.com/microsoft/StoreBroker/blob/master/Documentation/SETUP.md#authentication">Authentication section</a>. For your convenience, I have copied and modified that info to streamline it.</p>
+				<p>You need three key pieces of information from Azure portal:</p>
+				<ul>
+					<li><code>TenantId</code>: This is the ID of the Azure Active Directory (AAD) connected to your developer account.</li>
+					<li><code>ClientId</code> and <code>ClientSecret</code>: Essentially a username/password for a &quot;user&quot; that you create for StoreBroker to be able to use the API against your developer account on your behalf.</li>
+				</ul>
+				<blockquote>
+					<p>You only need to perform this task once, the credentials can be reused for every run. <strong>Protect the <code>Client ID</code> and <code>Client Secret</code> as if they were your username and password</strong>.</p>
+				</blockquote>
+				<p>To get those values:</p>
+				<ol>
+					<li><p>In Dev Center, go to your <strong>Account settings</strong>, click <strong>Manage users</strong>, and associate your
+							organization&#39;s Dev Center account with your organization&#39;s AAD. For detailed instructions,
+						see <a href="https://msdn.microsoft.com/windows/uwp/publish/manage-account-users">Manage account users</a>.</p>
+					</li>
+					<li><p>In the <strong>Manage users</strong> page, click <strong>Add Azure AD applications</strong>, add the Azure AD application
+							that represents the app or service that you will use to access submissions for your Dev Center
+							account, and assign it the <strong>Manager</strong> role. If this application already exists in your AAD,
+							you can select it on the <strong>Add Azure AD applications</strong> page to add it to your Dev Center account.
+							Otherwise, you can create a new AAD application on the <strong>Add Azure AD applications</strong> page.
+						For more information, see <a href="https://msdn.microsoft.com/windows/uwp/publish/manage-account-users#add-and-manage-azure-ad-applications">Add and manage Azure AD applications</a>. </p>
+					</li>
+					<li><p>Return to the <strong>Manage users</strong> page, click the name of your Azure AD application to go to the
+						application settings, and copy the <strong>Tenant ID</strong> and <strong>Client ID</strong> values.</p>
+					</li>
+					<li><p>Click <strong>Add new key</strong>. On the following screen, copy the <strong>Key</strong> value, which corresponds to the
+							<strong>Client secret</strong>. You <em>will not</em> be able to access this info again after you leave this page,
+							so make sure to not lose it. For more information, see the information about managing keys in
+						<a href="https://msdn.microsoft.com/windows/uwp/publish/manage-account-users#add-and-manage-azure-ad-applications">Add and manage Azure AD applications</a>.</p>
+					</li>
+				</ol>
+				<blockquote>
+					<p>These steps are directly from the Partner Center <a href="https://msdn.microsoft.com/windows/uwp/monetize/create-and-manage-submissions-using-windows-store-services">API Documentation</a>.</p>
+				</blockquote>
+				<a href="#quick-start-by-screenshots" id="quick-start-by-screenshots" style="color: inherit; text-decoration: none;">
+					<h2>Quick-Start by Screenshots</h2>
+				</a>
+				<a href="#getting-service-principal-credentials-from-azure-portal" id="getting-service-principal-credentials-from-azure-portal" style="color: inherit; text-decoration: none;">
+					<h3>Getting Service Principal Credentials from Azure Portal</h3>
+				</a>
+				<a href="#step-1" id="step-1" style="color: inherit; text-decoration: none;">
+					<h4>Step 1</h4>
+				</a>
+				<p><img src="./.images/ServicePrincipal1.png" alt="Step One"></p>
+				<a href="#step-2" id="step-2" style="color: inherit; text-decoration: none;">
+					<h4>Step 2</h4>
+				</a>
+				<p><img src="./.images/ServicePrincipal2.png" alt="Step Two"></p>
+				<a href="#step-3" id="step-3" style="color: inherit; text-decoration: none;">
+					<h4>Step 3</h4>
+				</a>
+				<p><img src="./.images/ServicePrincipal3.png" alt="Step Three"></p>
+				<a href="#getting-the-app-id" id="getting-the-app-id" style="color: inherit; text-decoration: none;">
+					<h2>Getting the App ID</h2>
+				</a>
+				<p>Go to Microsoft <a href="https://partner.microsoft.com/en-us/dashboard/windows/overview">Partner Center Developer Dashboard</a> and navigate to your app&#39;s page. Once there, open the <em>Product Management &gt; Product Identity</em> pane.</p>
+				<p><img src="./.images/FindAppId.png" alt="Find App ID"></p>
+				<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
+					<h2>API Reference</h2>
+				</a>
+				<p>See <a href="https://github.com/LanceMcCarthy/Action-MicrosoftPartnerCenter/docs">API Reference Documentation</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
