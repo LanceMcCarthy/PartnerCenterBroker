@@ -1,10 +1,9 @@
 {
-  "name": "@lancemccarthy/partner-center-broker",
+  "name": "partner-center-broker",
   "version": "1.0.1",
   "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "main": "./dist/devCenter.js",
+  "types": "./dist/devCenter.d.ts",
   "scripts": {
     "clean": "rimraf lib",
     "build": "tsc",
@@ -13,7 +12,7 @@
     "format-check": "prettier --check **/*.ts",
     "prep": "npm run build && npm run format-check",
     "package": "npm run build && npm run docs && npm pack",
-    "publish" : "npm run package && npm publish"
+    "publish": "npm run package && npm publish"
   },
   "repository": {
     "type": "git",
