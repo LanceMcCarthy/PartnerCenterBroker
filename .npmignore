@@ -4,6 +4,7 @@ docs
 
 jest.config.json
 test/
+__tests__
 
 
 src

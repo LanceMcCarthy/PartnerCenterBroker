@@ -17,7 +17,6 @@ export interface ApplicationSubmission {
 }
 
 // To parse this data: const createAppSubmissionResult = Convert.toCreateAppSubmissionResult(json);
-
 export interface CreateAppSubmissionResult {
   id: string
   applicationCategory: string
@@ -46,22 +45,71 @@ export interface CreateAppSubmissionResult {
   trailers: any[]
 }
 
-// To parse this data: const commitSubmissionResult = Convert.toCommitSubmissionResult(json);
+// To parse this data: const updateSubmissionResult = Convert.toUpdateSubmissionResult(json);
+export interface UpdateSubmissionResult {
+  id:                                                        string;
+  applicationCategory:                                       string;
+  pricing:                                                   Pricing;
+  visibility:                                                string;
+  targetPublishMode:                                         string;
+  targetPublishDate:                                         Date;
+  listings:                                                  Listings;
+  hardwarePreferences:                                       string[];
+  automaticBackupEnabled:                                    boolean;
+  canInstallOnRemovableMedia:                                boolean;
+  isGameDvrEnabled:                                          boolean;
+  gamingOptions:                                             any[];
+  hasExternalInAppProducts:                                  boolean;
+  meetAccessibilityGuidelines:                               boolean;
+  notesForCertification:                                     string;
+  status:                                                    string;
+  statusDetails:                                             StatusDetails;
+  fileUploadUrl:                                             string;
+  applicationPackages:                                       ApplicationPackage[];
+  packageDeliveryOptions:                                    PackageDeliveryOptions;
+  enterpriseLicensing:                                       string;
+  allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies: boolean;
+  allowTargetFutureDeviceFamilies:                           AllowTargetFutureDeviceFamilies;
+  friendlyName:                                              string;
+  trailers:                                                  any[];
+}
 
+// To parse this data: const submissionData = Convert.toSubmissionData(json);
+export interface SubmissionData {
+  applicationCategory:                                       string;
+  pricing:                                                   Pricing;
+  visibility:                                                string;
+  targetPublishMode:                                         string;
+  targetPublishDate:                                         Date;
+  listings:                                                  Listings;
+  hardwarePreferences:                                       string[];
+  automaticBackupEnabled:                                    boolean;
+  canInstallOnRemovableMedia:                                boolean;
+  isGameDvrEnabled:                                          boolean;
+  gamingOptions:                                             any[];
+  hasExternalInAppProducts:                                  boolean;
+  meetAccessibilityGuidelines:                               boolean;
+  notesForCertification:                                     string;
+  applicationPackages:                                       ApplicationPackage[];
+  packageDeliveryOptions:                                    PackageDeliveryOptions;
+  enterpriseLicensing:                                       string;
+  allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies: boolean;
+  allowTargetFutureDeviceFamilies:                           AllowTargetFutureDeviceFamilies;
+  trailers:                                                  any[];
+}
+
+// To parse this data: const commitSubmissionResult = Convert.toCommitSubmissionResult(json);
 export interface CommitSubmissionResult {
   status: string
 }
 
-// To parse this data:
-// import { SubmissionStatusResult } from "./storeApiModels";
-
+// To parse this data: import { SubmissionStatusResult } from "./storeApiModels";
 export interface SubmissionStatusResult {
   status: string
   statusDetails: StatusDetails
 }
 
 // To parse this data: const ServiceAuthenticationResult = Convert.toServiceAuthenticationResult(json);
-
 export interface ServiceAuthenticationResult {
   access_token: string
   token_type: string
@@ -71,7 +119,6 @@ export interface ServiceAuthenticationResult {
 }
 
 // To parse this data: const getSubmissionResult = Convert.toGetSubmissionResult(json);
-
 export interface GetSubmissionResult {
   id: string
   applicationCategory: string
@@ -189,8 +236,7 @@ export interface StatusDetails {
   certificationReports: any[]
 }
 
-// Todo be added in v2
-// To parse this data: const flightResourceResult = Convert.toFlightResourceResult(json);
+// [Todo be added in v2] To parse this data: const flightResourceResult = Convert.toFlightResourceResult(json);
 export interface FlightResourceResult {
   flightId: string
   friendlyName: string

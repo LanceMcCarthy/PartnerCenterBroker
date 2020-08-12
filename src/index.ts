@@ -7,7 +7,9 @@ import {
   ServiceAuthenticationResult,
   CommitSubmissionResult,
   CreateAppSubmissionResult,
-  AppResourceResult
+  AppResourceResult,
+  UpdateSubmissionResult,
+  SubmissionData
 } from './interfaces'
 
 // Partner Center API https://docs.microsoft.com/en-us/windows/uwp/monetize/create-and-manage-submissions-using-windows-store-services
@@ -21,7 +23,7 @@ class DevCenter {
   constructor(_tenantId: string, _clientId: string, _clientSecret: string) {
     if (_tenantId == null || _clientId == null || _clientSecret) {
       throw new Error(
-        'You must pass a valid Tenent ID, Client ID and Client Secret. See the documentation for more information https://lancemccarthy.github.io/PartnerCenterBroker/.'
+        'You must pass a valid Tenent ID, Client ID and Client Secret. See the documentation for exampls and guiance https://lancemccarthy.github.io/PartnerCenterBroker/.'
       )
     }
 
@@ -34,8 +36,16 @@ class DevCenter {
   public async GetAppInfo(appId: string): Promise<AppResourceResult> {
     try {
 
+      let auth = await this.authorize();
+
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}"`
-      const response = await this.apiRequest(requestUrl, 'get')
+
+      const response = await got(requestUrl, {
+        method: 'get',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`
+        },
+      })
 
       if (response.statusCode == 200) {
         return Convert.toAppInfoResult(response.body)
@@ -58,12 +68,60 @@ class DevCenter {
   // https://docs.microsoft.com/en-us/windows/uwp/monetize/create-an-app-submission
   public async CreateAppSubmission(appId: string): Promise<CreateAppSubmissionResult> {
     try {
+      let auth = await this.authorize();
 
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions"`
-      const response = await this.apiRequest(requestUrl, 'post')
+
+      const response = await got(requestUrl, {
+        method: 'post',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`,
+          ContentType: "application/json"
+        }
+      })
 
       if (response.statusCode == 200) {
         return Convert.toCreateAppSubmissionResult(response.body)
+      } else if (response.statusCode === 400) {
+        throw console.error('400 - The request parameters are invalid.')
+      } else if (response.statusCode === 404) {
+        throw console.error('404 - The specified submission could not be found.')
+      } else if (response.statusCode === 409) {
+        throw console.error(
+          'Error 409 - The specified submission was found but it could not be committed in its current state, or the app uses a Partner Center feature that is currently not supported by the Microsoft Store submission API.'
+        )
+      } else {
+        throw console.error(response.statusMessage)
+      }
+    } catch (err) {
+      throw console.error(err)
+    }
+  }
+
+  // Special Note: carefully read Request Body section in the documentation
+  // https://docs.microsoft.com/en-us/windows/uwp/monetize/update-an-app-submission
+  public async UpdateSubmission(
+    appId: string,
+    submissionId: string,
+    data: SubmissionData): Promise<UpdateSubmissionResult>{
+    try{
+      let auth = await this.authorize();
+
+      const requestUrl = "https://manage.devcenter.microsoft.com/v1.0/my/applications/{applicationId}/submissions/{submissionId}"
+
+      const response = await got(requestUrl, {
+        method: 'post',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`,
+          ContentType: "application/json"
+        },
+        body: Convert.submissionDataToJson(data)
+      })
+
+      if (response.statusCode == 200) {
+
+        return Convert.toUpdateSubmissionResult(response.body)
+
       } else if (response.statusCode === 400) {
         throw console.error('400 - The request parameters are invalid.')
       } else if (response.statusCode === 404) {
@@ -84,8 +142,16 @@ class DevCenter {
   public async CommitSubmission(appId: string, submissionId: string): Promise<CommitSubmissionResult> {
     try {
 
+      let auth = await this.authorize();
+
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions/${submissionId}/commit"`
-      const response = await this.apiRequest(requestUrl, 'post')
+
+      const response = await got(requestUrl, {
+        method: 'post',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`
+        },
+      })
 
       if (response.statusCode == 200) {
         return Convert.toCommitSubmissionResult(response.body)
@@ -108,9 +174,16 @@ class DevCenter {
   // https://docs.microsoft.com/en-us/windows/uwp/monetize/get-an-app-submission
   public async GetSubmission(appId: string, submissionId: string): Promise<GetSubmissionResult> {
     try {
+      let auth = await this.authorize();
 
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions/${submissionId}"`
-      const response = await this.apiRequest(requestUrl, 'post')
+
+      const response = await got(requestUrl, {
+        method: 'post',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`
+        },
+      })
 
       if (response.statusCode == 200) {
         return Convert.toGetSubmissionResult(response.body)
@@ -133,9 +206,16 @@ class DevCenter {
   // https://docs.microsoft.com/en-us/windows/uwp/monetize/get-status-for-an-app-submission
   public async GetSubmissionStatus(appId: string, submissionId: string): Promise<SubmissionStatusResult> {
     try {
+      let auth = await this.authorize();
 
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions/${submissionId}/status"`
-      const response = await this.apiRequest(requestUrl, 'get')
+
+      const response = await got(requestUrl, {
+        method: 'get',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`
+        },
+      })
 
       if (response.statusCode == 200) {
         return Convert.toSubmissionStatusResult(response.body)
@@ -155,11 +235,20 @@ class DevCenter {
     }
   }
 
+  // https://docs.microsoft.com/en-us/windows/uwp/monetize/delete-an-app-submission
   public async DeleteSubmission(appId: string, submissionId: string): Promise<boolean> {
     try {
 
+      let auth = await this.authorize();
+
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions/${submissionId}"`
-      const response = await this.apiRequest(requestUrl, 'post')
+
+      const response = await got(requestUrl, {
+        method: 'post',
+        headers: {
+          Authorization: `"${auth.token_type} ${auth.access_token}"`
+        },
+      })
 
       if (response.statusCode == 200) {
         return true
@@ -179,7 +268,7 @@ class DevCenter {
     }
   }
 
-  private async apiRequest(url: string, httpRequestMethod: any): Promise<any> {
+  public async authorize(): Promise<ServiceAuthenticationResult> {
     try {
       let needsNewToken = false
 
@@ -193,24 +282,17 @@ class DevCenter {
 
       if (needsNewToken) {
         this.authResult = await this.signin()
-        // To future-proof this, instead of hard coding the token type to "Bearer", I am appending the expected type
-        //const authHeader = `"${authResult.token_type} ${authResult.access_token}"`;
-        //options.headers.authorization = authHeader;
       }
 
       if (this.authResult == null) {
         throw new Error(
           'You could not be authenticated, double check the TenantID, ClientID and ClientSecret. See readme for more info.'
         )
-      }
-
-      return await got(url, {
-        method: httpRequestMethod,
-        headers: {
-          Authorization: `"${this.authResult.token_type} ${this.authResult.access_token}"`
+      }else{
+        return this.authResult
         }
-      })
     } catch (ex) {
+
       try {
         if (ex.statusCode === 401) {
 
@@ -221,14 +303,10 @@ class DevCenter {
             throw new Error(
               'You could not be authenticated, double check the TenantID, ClientID and ClientSecret. See readme for more info.'
             )
+          } else{
+            return this.authResult;
           }
 
-          return await got(url, {
-            method: httpRequestMethod,
-            headers: {
-              Authorization: `"${this.authResult.token_type} ${this.authResult.access_token}"`
-            }
-          })
         } else if (ex.statusCode === 400) {
           throw console.error('400 - The request parameters are invalid.')
         } else if (ex.statusCode === 404) {

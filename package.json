@@ -7,6 +7,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "tsc",
+    "test": "jest",
     "docs": "rimraf ./docs && typedoc src/ --out docs --mode modules --module commonjs --target es6 --excludePrivate && gh-pages -d docs -t",
     "format-write": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
@@ -44,6 +45,8 @@
     "@types/jest": "^26.0.9",
     "@types/node": "^14.0.27",
     "gh-pages": "^3.1.0",
+    "jest": "^26.4.0",
+    "jest-circus": "^26.4.0",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.2.0",
@@ -53,6 +56,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "got": "^11.5.2"
+    "got": "^11.5.2",
+    "jest-junit": "^11.1.0"
   }
 }

@@ -70,8 +70,12 @@ const startSubmissionResult = await devCenter.CreateAppSubmission(appId);
 // the pre-authenticated SAS url can be used to create a client
 const blobClient = await new BlockBlobClient(startSubmissionResult.fileUploadUrl);
 
+// PREPARE ZIP file that contains all the required info (see Submission Data section below)
+
+const assetFile = "submission.zip";
+
 // Upload the packages and data
-await blobClient.uploadFile(packageFile);
+await blobClient.uploadFile(assetFile);
 
 ```
 
@@ -131,5 +135,36 @@ Go to Microsoft [Partner Center Developer Dashboard](https://partner.microsoft.c
 
 ![Find App ID](https://raw.githubusercontent.com/LanceMcCarthy/PartnerCenterBroker/main/.images/FindAppId.png)
 
-## API Reference
+## Submission Preparation
+
+The `UpdateSubmmissionRequest` call must have the following details in JSON format. I have made this easier by allowing you to use a single typeScript object and the library will do the conversaion for you.
+
+### Request Body
+
+
+| Value                                    | Type    | Description                              |
+|------------------------------------------|---------|------------------------------------------|
+| applicationCategory                      | string  | A string that specifies the [category and/or subcategory](https://docs.microsoft.com/en-us/windows/uwp/publish/category-and-subcategory-table) for your app. Categories and subcategories are combined into a single string with the underscore '_' character, such as **BooksAndReference_EReader**. |
+| pricing                                  | object  | An object that contains pricing info for the app. For more information, see the [Pricing resource](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#pricing-object) section. |
+| visibility                               | string  | The visibility of the app. This can be one of the following values: * Hidden * Public * Private * NotSet |
+| targetPublishMode                        | string  | The publish mode for the submission. This can be one of the following values: * Immediate * Manual * SpecificDate |
+| targetPublishDate                        | string  | The publish date for the submission in ISO 8601 format, if the _targetPublishMode_ is set to SpecificDate. |
+| listings                                 | object  | A dictionary of key and value pairs, where each key is a country code and each value is a [Listing resource](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#listing-object) object that contains listing info for the app. |
+| hardwarePreferences                      | array   | An array of strings that define the [hardware preferences](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/enter-app-properties) for your app. This can be one of the following values: * Touch * Keyboard * Mouse * Camera * NfcHce * Nfc * BluetoothLE * Telephony |
+| automaticBackupEnabled                   | boolean | Indicates whether Windows can include your app's data in automatic backups to OneDrive. For more information, see [App declarations](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/app-declarations). |
+| canInstallOnRemovableMedia               | boolean | Indicates whether customers can install your app to removable storage. For more information, see [App declarations](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/app-declarations). |
+| isGameDvrEnabled                         | boolean | Indicates whether game DVR is enabled for the app. |
+| gamingOptions                            | object  | An array that contains one [gaming options resource](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#gaming-options-object) that defines game-related settings for the app. |
+| hasExternalInAppProducts                 | boolean | Indicates whether your app allows users to make purchase outside the Microsoft Store commerce system. For more information, see [App declarations](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/app-declarations). |
+| meetAccessibilityGuidelines              | boolean | Indicates whether your app has been tested to meet accessibility guidelines. For more information, see [App declarations](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/app-declarations). |
+| notesForCertification                    | string  | Contains [notes for certification](https://docs.microsoft.com/en-us/en-us/windows/uwp/publish/notes-for-certification) for your app. |
+| applicationPackages                      | array   | Contains objects that provide details about each package in the submission. For more information, see the [Application package](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#application-package-object) section. When calling this method to update an app submission, only the _fileName_, _fileStatus_, _minimumDirectXVersion_, and _minimumSystemRam_ values of these objects are required in the request body. The other values are populated by Partner Center. |
+| packageDeliveryOptions                   | object  | Contains gradual package rollout and mandatory update settings for the submission. For more information, see [Package delivery options object](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#package-delivery-options-object). |
+| enterpriseLicensing                      | string  | One of the [enterprise licensing values](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#enterprise-licensing) values that indicate the enterprise licensing behavior for the app. |
+| allowMicrosftDecideAppAvailabilityToFutureDeviceFamilies | boolean | Indicates whether Microsoft is allowed to [make the app available to future Windows 10 device families](https://docs.microsoft.com/en-us/windows/uwp/publish/set-app-pricing-and-availability). |
+| allowTargetFutureDeviceFamilies          | boolean | Indicates whether your app is allowed to [target future Windows 10 device families](https://docs.microsoft.com/en-us/windows/uwp/publish/set-app-pricing-and-availability). |
+| trailers                                 | array   | An array that contains up to [trailer resources](https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions#trailer-object) that represent video trailers for the app listing. |
+
+
+
 

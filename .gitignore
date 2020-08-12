@@ -351,3 +351,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+__tests__/secrets.ts
+.env.test
+.env
+.env.development
+src/utils/config.ts
+src/utils/secrets.ts
