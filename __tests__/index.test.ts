@@ -1,7 +1,6 @@
 import { Convert } from '../src/converters'
 import DevCenter = require('../src/index')
 import { Helpers } from '../src/helpers';
-import { SecretsManager } from '../src/utils/secrets'; // gitignored
 
 import {
   GetSubmissionResult,
@@ -10,42 +9,32 @@ import {
   CommitSubmissionResult,
   CreateAppSubmissionResult,
   AppResourceResult,
-  UpdateSubmissionResult
+  UpdateSubmissionResult,
+  SubmissionData
 } from '../src/interfaces'
 
-test('Test Variables', ()=>{
-  const vars = loadTestVariables();
-  const tenantId = vars[0];
-  const clientId = vars[1];
-  const clientSecret = vars[2];
-  const appId = vars[3];
+// test('Test Authentication', async () => {
+//   const tenantId = "";
+//   const clientId = "";
+//   const clientSecret = "";
+//   const appId = "";
 
-  expect(tenantId !== "")
-  expect(clientId !== "")
-  expect(clientSecret !== "")
-  expect(appId !== "")
-})
+//   const dc = new DevCenter(tenantId, clientId, clientSecret);
 
-test('Test Authentication', async () => {
-  const vars = loadTestVariables();
+//   console.log("Authorizing...");
 
-  const dev = new DevCenter(vars[0], vars[1], vars[2]);
+//   await dc.authorize();
 
-  console.log("Authorizing...");
+//   expect(dc.authResult != null)
 
-  await dev.authorize();
-
-  expect(dev.authResult != null)
-
-  expect(dev.authResult.expires_in).toBeGreaterThan(0);
-})
+//   expect(dc.authResult.expires_in).toBeGreaterThan(0);
+// })
 
 // test('Test AppInfo Fetch', async () => {
-//   const vars = loadTestVariables();
-//   const tenantId = vars[0];
-//   const clientId = vars[1];
-//   const clientSecret = vars[2];
-//   const appId = vars[3];
+//   const tenantId = "";
+//   const clientId = "";
+//   const clientSecret = "";
+//   const appId = "";
 
 //   const dc = new DevCenter(tenantId, clientId, clientSecret);
 
@@ -57,35 +46,43 @@ test('Test Authentication', async () => {
 // })
 
 // test('Test AppInfo Fetch', async () => {
-//   const vars = loadTestVariables();
-//   const tenantId = vars[0];
-//   const clientId = vars[1];
-//   const clientSecret = vars[2];
-//   const appId = vars[3];
+//   const tenantId = "";
+//   const clientId = "";
+//   const clientSecret = "";
+//   const appId = "";
 
 //   const dc = new DevCenter(tenantId, clientId, clientSecret);
 
 //   const appInfoResult = await dc.GetAppInfo(appId)
 
-//   const createResult = await dc.CreateAppSubmission(appId)
+//   if(appInfoResult.pendingApplicationSubmission != null){
+//     const deleteResult = await dc.DeleteSubmission(appId, appInfoResult.pendingApplicationSubmission.id)
+//   }
 
+//   const createResult = await dc.CreateAppSubmission(appId)
 
 //   let submissionId = createResult.id;
 
-//   const clonedSubmission = Helpers.CloneLastSubmissionData(createResult);
+//   const cloneLastSubmission = true;
 
-//   clonedSubmission.applicationPackages[0].fileName = "./TestPackages/PackageProject_2020.810.59.0_x86_bundle.appxupload"
+//   let subData: SubmissionData = undefined;
 
-//   let updateResult = await dc.UpdateSubmission(appId, submissionId, clonedSubmission);
+//   if(cloneLastSubmission){
+//     subData = Helpers.CloneLastSubmissionData(createResult);
+//   } else{
+//     // create SubmissionData from scratch
+//     subData = Helpers.GenerateSampleSubmission();
+//   }
+
+//   // TODO need to generate ZIP with json file
+//   subData.applicationPackages[0].fileName = "PackageProject_2020.810.59.0_x86_bundle.appxupload"
+
+//   const jsonToBeSaved: string = Convert.submissionDataToJson(subData);
+//   const fs = require('fs');
+//   fs.writeFileSync('applicationdata.json', jsonToBeSaved);
+
+//   let updateResult = await dc.UpdateSubmission(appId, submissionId, subData);
 
 //   expect(dc != null)
 // })
 
-function loadTestVariables() : string[] {
-  const tenantId = SecretsManager.getTenantId();
-  const clientId = SecretsManager.getClientId();
-  const clientSecret = SecretsManager.getClientSecret();
-  const appId = SecretsManager.getAppId();
-
-  return [tenantId, clientId, clientSecret, appId]
-}

@@ -49,7 +49,7 @@ export class Helpers{
     return subData;
   }
 
-  public GenerateSampleSubmission(): SubmissionData{
+  static GenerateSampleSubmission(): SubmissionData{
     const ovrde: Windows81 = {
       description: ""
     }
