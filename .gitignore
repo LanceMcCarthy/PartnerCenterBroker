@@ -357,3 +357,5 @@ __tests__/secrets.ts
 .env.development
 src/utils/config.ts
 src/utils/secrets.ts
+lib/utils/secrets.js
+lib/utils/secrets.d.ts

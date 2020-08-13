@@ -2,8 +2,8 @@
   "name": "partner-center-broker",
   "version": "1.0.1",
   "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
-  "main": "./dist/devCenter.js",
-  "types": "./dist/devCenter.d.ts",
+  "main": "./lib/devCenter.js",
+  "types": "./lib/devCenter.d.ts",
   "scripts": {
     "clean": "rimraf lib",
     "build": "tsc",
@@ -11,7 +11,7 @@
     "docs": "rimraf ./docs && typedoc src/ --out docs --mode modules --module commonjs --target es6 --excludePrivate && gh-pages -d docs -t",
     "format-write": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
-    "prep": "npm run build && npm run format-write",
+    "prep": "npm run clean && npm run build && npm run format-write",
     "package": "npm run build && npm run docs && npm pack",
     "publish": "npm run package && npm publish"
   },

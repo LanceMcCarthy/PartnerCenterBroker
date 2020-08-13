@@ -6,80 +6,134 @@ Take a look at the [Documentation and API Reference](https://lancemccarthy.githu
   
 ## Usage
 
+### Preparation
+
 You will need the following 4 pieces of information to use this:
 
 * A Service Principal's **Tenant ID**, **Client ID** and **Client Secret** (if you do not have this already, see the Authentication or  section below)
-* Your app's **App ID** (aka 'Store ID' in DevCenter). If youdo not know this, see the Screenshots section below.
+* Your app's **App ID** (aka 'Store ID' in DevCenter). If you do not know this, see the Screenshots section below.
 
 If you do not have any of the above, see the **Quick-Start by Screenshots** section below.
 
-### Code
+### Implementation
 
-Once you have your Tenant ID, Client ID and client Secret, you can initialize the DevCenter object
+Once you have your **Tenant ID**, **Client ID** and **Client Secret**, you can initialize the `DevCenter` object.
+
+##### Import 
 
 ```typescript
-import { DevCenter } from '@LanceMcCarthy/partner-center-broker'
+import { DevCenter } from 'partner-center-broker'
+```
 
-const appId = "";
+```typescript
 const tenantId = "";
 const clientId = "";
 const clientSecret = "";
 
-// Instantiate a DevCenter object
-const devCenter = new storeSdk.DevCenter(tenantId, clientId, clientSecret);
+// Instantiate the DevCenter class
+const devCenter = new DevCenter(tenantId, clientId, clientSecret);
 ```
 
-#### Methods
+##### Get app info
 
-Once you have a valid `DevCenter` instance, you can start making API calls. Here are some of the available methods and what they do:
+Once you have a valid `DevCenter` instance, you can start making API calls. The first thing you should do is call `GetAppInfo()` using your application's app ID (the Store ID from the preparation section above.
 
 ```typescript
+const appId = "";
 
-// To get an application's information (returns type of AppResourceResult)
-const appInfo = await devCenter.GetAppInfo(appId);
+// Get an application's information
+const appInfoResult = await devCenter.GetAppInfo(appId);
 
-// To create a submission (returns type of CommitSubmissionResult). See 'Upload Assets' code example for more information about how to use this result.
+console.log(`"Got information for ${appInfoResult.primaryName}!"`);
+```
+
+##### Deleting a Submission
+
+If you would like to delete a pending submission and start a new one, you only need the appId and submissionId
+
+```typescript
+// Using appInfoResult from GetAppInfo()
+const submissionPending = appInfoResult.pendingApplicationSubmission != null;
+
+if(submissionPending){
+   const getSubmissionStatusResult = await devCenter.DeleteSubmission(appId, submissionId);
+}
+```
+
+##### Starting a new submission
+
+You can think of a submission as a starting point, a notice that you want to update the app. 
+
+```typescript
+// To create a submission 
 const createSubmissionResult = await devCenter.CreateAppSubmission(appId);
 
-// Grab the submission ID for use in the rest of the workflow
+// Grab the submission ID for use in the rest of the workflow.
 const submissionId = createSubmissionResult.Id;
-
-// Get a existing application's submission information (returns type of GetSubmissionResult)
-const getSubmissionResult = await devCenter.GetSubmission(appId, submissionId);
-
-// Commit a submission for review (returns type of AppResourceResult)
-const commitSubmissionResult = await devCenter.CommitSubmission(appId, submissionId);
-
-// Delete a submission (returns type of boolean)
-const getSubmissionStatusResult = await devCenter.DeleteSubmission(appId, submissionId);
 ```
 
-##### Uploading Assets
+##### Updating the submission with the Submission Data
 
-When you start a submission, you will get an SAS storage URL in the `CommitSubmissionResult.fileUploadUrl` value. That is the location you need to upload the application's packages and data. The best way to approach this is to use the Azure Store SDK (**'@azure/storage-blob'**) and use `BlockBlobClient`. 
-
-Here's an example:
+This is where things get complicated. The submission body needs a lot of info (see the `Update Submission Request Body` section at the bottom of this page). To keep things as simple as possible, you can clone the last app submission using the `CloneLastSubmissionData` helper method.
 
 ```typescript
-// Import the Azure BlobStorage SDK
-import { BlockBlobClient } from '@azure/storage-blob'
+// Uses createSubmissionResult and submissionId previous step
 
-// After you start the submission, it returns an SAS url in the result.
-const startSubmissionResult = await devCenter.CreateAppSubmission(appId);
+// This copies all the data from the prvious submission into the new submission
+const clonedSubmission = Helpers.CloneLastSubmissionData(createSubmissionResult);
 
-// the pre-authenticated SAS url can be used to create a client
+// In this example we are only changing the name of the file that is going to be inside the uploaded assets.
+clonedSubmission.applicationPackages[0].fileName = "PathInZip/MyApp_x86_bundle.appxupload"
+
+// Update the submissino with the new app data
+const updateResult = await dev.UpdateSubmission(appId, submissionId, clonedSubmission);
+```
+
+> If you would like to alter more than just the package file, see the 
+
+##### Preparing and uploading assets
+
+As part of the SubmissionResult object you will get an SAS storage URL in the `CommitSubmissionResult.fileUploadUrl` value. That is the location you need to upload the application submission data. The best way to approach this is to use the Azure Store SDK (**'@azure/storage-blob'**) and use `BlockBlobClient`. 
+
+```typescript
+// from previous steps
+const sasUploadUrl = createSubmissionResult.fileUploadUrl;
+
+// the pre-authenticated SAS url can be used to create a BlockBlobClient
+// requires import { BlockBlobClient } from '@azure/storage-blob'
 const blobClient = await new BlockBlobClient(startSubmissionResult.fileUploadUrl);
 
 // PREPARE ZIP file that contains all the required info (see Submission Data section below)
-
 const assetFile = "submission.zip";
 
-// Upload the packages and data
+// Upload the zip file
 await blobClient.uploadFile(assetFile);
 
 ```
+##### Submit
 
-## Authentication
+Finally you can commit the submission once all the submission data has been updated and uploaded.
+
+```typescript
+// SubmissionId and AppId are from previous steps
+
+// Commit a submission for review
+const commitSubmissionResult = await devCenter.CommitSubmission(appId, submissionId);
+
+```
+
+##### Polling/Checking Status
+
+You can check the status of a submission with the following method
+
+```typescript
+// SubmissionId and AppId are from previous steps
+const statusResult = await dc.GetSubmissionStatus(appId, submissionId)
+```
+
+This could be used to poll a submission as it returns value for every stage of the submission, including failures. See
+
+## Service Principal and Authentication
 
 For a more robust explanation of how to create this information, visit the Microsoft Store Broker documentation's [Authentication section](https://github.com/microsoft/StoreBroker/blob/master/Documentation/SETUP.md#authentication). For your convenience, I have copied and modified that info to streamline it.
 
@@ -137,9 +191,37 @@ Go to Microsoft [Partner Center Developer Dashboard](https://partner.microsoft.c
 
 ## Submission Preparation
 
-The `UpdateSubmmissionRequest` call must have the following details in JSON format. I have made this easier by allowing you to use a single typeScript object and the library will do the conversaion for you.
+The `UpdateSubmmissionRequest` call must have the following details in JSON format. I have made this easier by allowing you to use a single typeScript object and the library will do the conversion for you.
 
-### Request Body
+# Interfaces and Parameters
+
+## Status Values
+
+Here are the possible status messages:
+
+```text
+  None
+  Canceled
+  PendingCommit
+  CommitStarted
+  CommitFailed
+  PendingPublication
+  Publishing
+  Published
+  PublishFailed
+  PreProcessing
+  PreProcessingFailed
+  Certification
+  CertificationFailed
+  Release
+  ReleaseFailed
+```
+
+## `ApplicationData` Interface
+
+The `UpdateSubmission()` method requires a parameter of type `ApplicationData`. This gets converted to JSON and is used as the body of the PUT request to the DevCenter API. 
+
+You can create this from scratch, but it is **strongly** recommended that you clone this from the last submission using the `Helpers.CloneLastSubmissionData()` helper method, and then modify any values afterwards.
 
 
 | Value                                    | Type    | Description                              |
