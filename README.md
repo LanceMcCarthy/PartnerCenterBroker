@@ -1,8 +1,8 @@
 # Microsoft Partner Center Broker
 
-A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your UWP application submissions.
+A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your packaged application submissions. Take a look at the [Documentation and API Reference](https://lancemccarthy.github.io/PartnerCenterBroker/) for the latest info.
 
-Take a look at the [Documentation and API Reference](https://lancemccarthy.github.io/PartnerCenterBroker/) for the latest info.
+> This project is still experimental and not production-ready for all scenarios. If you would like a production-ready library, take a look at all the available options here https://docs.microsoft.com/en-us/partner-center/develop/
   
 ## Usage
 
