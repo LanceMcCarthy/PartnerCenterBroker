@@ -48,8 +48,6 @@ describe("Parameter Tests", ()=>{
   });
 });
 
-const testif = (condition: boolean) => condition ? test : test.skip;
-
 describe("API Tests", ()=>{
   const tenantId = process.env.PARTNER_CENTER_TENANT_ID;
   const clientId = process.env.PARTNER_CENTER_CLIENT_ID;
@@ -69,7 +67,7 @@ describe("API Tests", ()=>{
     return;
   }
 
-  test('Test Authentication', async () => {
+  test.skip('Test Authentication', async () => {
     const dc = new DevCenter(tenantId, clientId, clientSecret);
   
     console.log("Authorizing...");
@@ -83,7 +81,7 @@ describe("API Tests", ()=>{
     expect(authResult.expires_in).toBeGreaterThan(0);
   })
 
-  test('Test AppInfo Fetch', async () => {
+  test.skip('Test AppInfo Fetch', async () => {
     const dc = new DevCenter(tenantId, clientId, clientSecret);
   
     const appInfoResult = await dc.GetAppInfo(appId);
@@ -93,7 +91,7 @@ describe("API Tests", ()=>{
     expect(appInfoResult != null);
   })
 
-  test('Test AppInfo Fetch', async () => {
+  test.skip('Create and Uploading Submission', async () => {
     const dc = new DevCenter(tenantId, clientId, clientSecret);
   
     const appInfoResult = await dc.GetAppInfo(appId)

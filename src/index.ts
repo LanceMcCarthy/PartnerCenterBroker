@@ -38,11 +38,11 @@ class DevCenter {
     this.clientSecret = _clientSecret;
   }
 
-  // https://docs.microsoft.com/en-us/windows/uwp/monetize/get-app-data
   public async GetAppInfo(appId: string): Promise<AppResourceResult> {
     try {
       let auth = await this.authorize();
 
+      // https://docs.microsoft.com/en-us/windows/uwp/monetize/get-app-data
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}"`;
 
       const response = await got(requestUrl, {
@@ -70,11 +70,11 @@ class DevCenter {
     }
   }
 
-  // https://docs.microsoft.com/en-us/windows/uwp/monetize/create-an-app-submission
   public async CreateAppSubmission(appId: string): Promise<CreateAppSubmissionResult> {
     try {
       let auth = await this.authorize();
 
+      // https://docs.microsoft.com/en-us/windows/uwp/monetize/create-an-app-submission
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions"`;
 
       const response = await got(requestUrl, {
@@ -103,12 +103,12 @@ class DevCenter {
     }
   }
 
-  // Special Note: carefully read Request Body section in the documentation
-  // https://docs.microsoft.com/en-us/windows/uwp/monetize/update-an-app-submission
   public async UpdateSubmission(appId: string, submissionId: string, data: SubmissionData): Promise<UpdateSubmissionResult> {
     try {
       let auth = await this.authorize();
 
+      // Special Note: carefully read Request Body section in the documentation
+      // https://docs.microsoft.com/en-us/windows/uwp/monetize/update-an-app-submission
       const requestUrl = 'https://manage.devcenter.microsoft.com/v1.0/my/applications/{applicationId}/submissions/{submissionId}';
 
       const response = await got(requestUrl, {
@@ -138,11 +138,11 @@ class DevCenter {
     }
   }
 
-  // https://docs.microsoft.com/en-us/windows/uwp/monetize/commit-an-app-submission
   public async CommitSubmission(appId: string, submissionId: string): Promise<CommitSubmissionResult> {
     try {
       let auth = await this.authorize();
 
+      // https://docs.microsoft.com/en-us/windows/uwp/monetize/commit-an-app-submission
       const requestUrl = `"https://manage.devcenter.microsoft.com/v1.0/my/applications/${appId}/submissions/${submissionId}/commit"`;
 
       const response = await got(requestUrl, {
