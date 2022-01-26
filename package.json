@@ -1,18 +1,19 @@
 {
   "name": "partner-center-broker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
   "main": "./lib/devCenter.js",
   "types": "./lib/devCenter.d.ts",
   "scripts": {
     "clean": "rimraf lib",
-    "build": "tsc",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && tsc",
+    "rebuild": "set NODE_OPTIONS=--openssl-legacy-provider && rimraf lib && tsc",
     "test": "jest",
     "docs": "rimraf ./docs && typedoc src/ --out docs --mode modules --module commonjs --target es6 --excludePrivate && gh-pages -d docs -t",
     "format-write": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
-    "prep": "npm run clean && npm run build && npm run format-write",
-    "package": "npm run build && npm run docs && npm pack",
+    "prep": "npm run rebuild && npm run format-write",
+    "package": "npm run rebuild && npm run docs && npm pack",
     "publish": "npm run package && npm publish"
   },
   "repository": {
@@ -40,6 +41,10 @@
     "url": "https://github.com/LanceMcCarthy/PartnerCenterBroker/issues"
   },
   "homepage": "https://github.com/LanceMcCarthy/PartnerCenterBroker#readme",
+  "dependencies": {
+    "got": "^11.5.2",
+    "jest-junit": "^11.1.0"
+  },
   "devDependencies": {
     "@types/got": "^9.6.11",
     "@types/jest": "^26.0.9",
@@ -54,9 +59,5 @@
     "tslint-config-standard": "^9.0.0",
     "typedoc": "^0.18.0",
     "typescript": "^3.9.7"
-  },
-  "dependencies": {
-    "got": "^11.5.2",
-    "jest-junit": "^11.1.0"
   }
 }

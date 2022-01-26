@@ -19,9 +19,9 @@ import {
   AllowTargetFutureDeviceFamilies,
   PackageRollout,
   MarketSpecificPricings
-} from '../src/interfaces'
+} from '../src/interfaces';
 
-export class Helpers{
+export class Helpers {
   static CloneLastSubmissionData(original: CreateAppSubmissionResult): SubmissionData {
     const subData: SubmissionData = {
       applicationCategory: original.applicationCategory,
@@ -44,135 +44,138 @@ export class Helpers{
       allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies: original.allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies,
       allowTargetFutureDeviceFamilies: original.allowTargetFutureDeviceFamilies,
       trailers: original.trailers
-    }
+    };
 
     return subData;
   }
 
-  static GenerateSampleSubmission(): SubmissionData{
+  static GenerateSampleSubmission(): SubmissionData {
     const ovrde: Windows81 = {
-      description: ""
-    }
+      description: ''
+    };
 
     const pltOverrides: PlatformOverrides = {
       Windows81: ovrde
-    }
+    };
 
     const imgs: Image[] = [
       {
-        fileName: "",
-        fileStatus: "",
-        id: "",
-        imageType: "",
-      }, {
-        fileName: "",
-        fileStatus: "",
-        id: "",
-        imageType: "",
+        fileName: '',
+        fileStatus: '',
+        id: '',
+        imageType: ''
+      },
+      {
+        fileName: '',
+        fileStatus: '',
+        id: '',
+        imageType: ''
       }
-    ]
+    ];
 
     const bsListing: BaseListing = {
-      copyrightAndTrademarkInfo: "",
-      keywords: ["", ""],
-      licenseTerms: "",
-      privacyPolicy: "",
-      supportContact: "",
-      websiteUrl: "",
-      description: "",
-      features: ["", ""],
-      releaseNotes: "",
+      copyrightAndTrademarkInfo: '',
+      keywords: ['', ''],
+      licenseTerms: '',
+      privacyPolicy: '',
+      supportContact: '',
+      websiteUrl: '',
+      description: '',
+      features: ['', ''],
+      releaseNotes: '',
       images: imgs,
       recommendedHardware: [],
-      title: ""
-    }
+      title: ''
+    };
 
     const enusListing: EnUs = {
       baseListing: bsListing,
       platformOverrides: pltOverrides
-    }
+    };
 
     const listings: Listings = {
-      "en-us": enusListing
-    }
+      'en-us': enusListing
+    };
 
     const dvFams: AllowTargetFutureDeviceFamilies = {
       Desktop: true,
       Mobile: true,
       Holographic: true,
       Xbox: true,
-      Team: true,
-    }
+      Team: true
+    };
     const rllout: PackageRollout = {
       isPackageRollout: true,
       packageRolloutPercentage: 100,
-      packageRolloutStatus: "",
-      fallbackSubmissionId: ""
-    }
+      packageRolloutStatus: '',
+      fallbackSubmissionId: ''
+    };
 
     const delivOptns: PackageDeliveryOptions = {
       packageRollout: rllout,
       isMandatoryUpdate: true,
       mandatoryUpdateEffectiveDate: new Date(Date.now())
-    }
+    };
 
-    const pckgs: ApplicationPackage[] = [{
-        fileName: "",
-        fileStatus: "",
-        id: "",
-        version: "",
-        architecture: "",
-        languages: ["",""],
-        capabilities: ["",""],
-        minimumDirectXVersion: "",
-        minimumSystemRam: "",
-        targetDeviceFamilies: ["",""]
-      },{
-        fileName: "",
-        fileStatus: "",
-        id: "",
-        version: "",
-        architecture: "",
-        languages: ["",""],
-        capabilities: ["",""],
-        minimumDirectXVersion: "",
-        minimumSystemRam: "",
-        targetDeviceFamilies: ["",""]
+    const pckgs: ApplicationPackage[] = [
+      {
+        fileName: '',
+        fileStatus: '',
+        id: '',
+        version: '',
+        architecture: '',
+        languages: ['', ''],
+        capabilities: ['', ''],
+        minimumDirectXVersion: '',
+        minimumSystemRam: '',
+        targetDeviceFamilies: ['', '']
+      },
+      {
+        fileName: '',
+        fileStatus: '',
+        id: '',
+        version: '',
+        architecture: '',
+        languages: ['', ''],
+        capabilities: ['', ''],
+        minimumDirectXVersion: '',
+        minimumSystemRam: '',
+        targetDeviceFamilies: ['', '']
       }
-    ]
+    ];
 
-    const msPcing: MarketSpecificPricings = {}
+    const msPcing: MarketSpecificPricings = {};
 
     const pcing: Pricing = {
-      trialPeriod: "",
+      trialPeriod: '',
       marketSpecificPricings: msPcing,
       sales: [],
-      priceId: "",
+      priceId: '',
       isAdvancedPricingModel: false
-    }
+    };
 
     const subData: SubmissionData = {
-      applicationCategory: "",
+      applicationCategory: '',
       pricing: pcing,
-      visibility: "",
-      targetPublishMode: "",
+      visibility: '',
+      targetPublishMode: '',
       targetPublishDate: new Date(Date.now()),
       listings: listings,
-      hardwarePreferences: ["", ""],
+      hardwarePreferences: ['', ''],
       automaticBackupEnabled: true,
       canInstallOnRemovableMedia: true,
       isGameDvrEnabled: true,
       gamingOptions: [],
       hasExternalInAppProducts: false,
       meetAccessibilityGuidelines: true,
-      notesForCertification: "",
+      notesForCertification: '',
       applicationPackages: pckgs,
       packageDeliveryOptions: delivOptns,
-      enterpriseLicensing: "",
+      enterpriseLicensing: '',
       allowMicrosoftDecideAppAvailabilityToFutureDeviceFamilies: true,
       allowTargetFutureDeviceFamilies: dvFams,
       trailers: []
-    }
+    };
 
     return subData;
   }
