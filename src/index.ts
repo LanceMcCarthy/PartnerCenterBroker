@@ -21,9 +21,21 @@ class DevCenter {
   authResult: ServiceAuthenticationResult | undefined
 
   constructor(_tenantId: string, _clientId: string, _clientSecret: string) {
-    if (_tenantId == null || _clientId == null || _clientSecret) {
+    if(typeof _tenantId!='undefined' && !_tenantId){
       throw new Error(
-        'You must pass a valid Tenent ID, Client ID and Client Secret. See the documentation for exampls and guiance https://lancemccarthy.github.io/PartnerCenterBroker/.'
+        'You must pass a valid Tenant ID. See the documentation for examples and guidance https://lancemccarthy.github.io/PartnerCenterBroker/.'
+      )
+    }
+
+    if(typeof _clientId!='undefined' && !_clientId){
+      throw new Error(
+        'You must pass a valid Client ID. See the documentation for examples and guidance https://lancemccarthy.github.io/PartnerCenterBroker/.'
+      )
+    }
+
+    if(typeof _clientSecret!='undefined' && !_clientSecret){
+      throw new Error(
+        'You must pass a valid Client Secret. See the documentation for examples and guidance https://lancemccarthy.github.io/PartnerCenterBroker/.'
       )
     }
 
