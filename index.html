@@ -67,8 +67,10 @@
 				<a href="#microsoft-partner-center-broker" id="microsoft-partner-center-broker" style="color: inherit; text-decoration: none;">
 					<h1>Microsoft Partner Center Broker</h1>
 				</a>
-				<p>A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your UWP application submissions.</p>
-				<p>Take a look at the <a href="https://lancemccarthy.github.io/PartnerCenterBroker/">Documentation and API Reference</a> for the latest info.</p>
+				<p>A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your packaged application submissions. Take a look at the <a href="https://lancemccarthy.github.io/PartnerCenterBroker/">Documentation and API Reference</a> for the latest info.</p>
+				<blockquote>
+					<p>This project is still experimental and not production-ready for all scenarios. If you would like a production-ready library, take a look at all the available options here <a href="https://docs.microsoft.com/en-us/partner-center/develop/">https://docs.microsoft.com/en-us/partner-center/develop/</a></p>
+				</blockquote>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
@@ -88,13 +90,15 @@
 				<a href="#import" id="import" style="color: inherit; text-decoration: none;">
 					<h5>Import</h5>
 				</a>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { DevCenter } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;partner-center-broker&#x27;</span></code></pre>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { DevCenter } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;partner-center-broker&#x27;</span>
+</code></pre>
 				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> tenantId = <span class="hljs-string">&quot;&quot;</span>;
 <span class="hljs-keyword">const</span> clientId = <span class="hljs-string">&quot;&quot;</span>;
 <span class="hljs-keyword">const</span> clientSecret = <span class="hljs-string">&quot;&quot;</span>;
 
 <span class="hljs-comment">// Instantiate the DevCenter class</span>
-<span class="hljs-keyword">const</span> devCenter = <span class="hljs-keyword">new</span> DevCenter(tenantId, clientId, clientSecret);</code></pre>
+<span class="hljs-keyword">const</span> devCenter = <span class="hljs-keyword">new</span> DevCenter(tenantId, clientId, clientSecret);
+</code></pre>
 				<a href="#get-app-info" id="get-app-info" style="color: inherit; text-decoration: none;">
 					<h5>Get app info</h5>
 				</a>
@@ -104,7 +108,8 @@
 <span class="hljs-comment">// Get an application&#x27;s information</span>
 <span class="hljs-keyword">const</span> appInfoResult = <span class="hljs-keyword">await</span> devCenter.GetAppInfo(appId);
 
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`&quot;Got information for <span class="hljs-subst">${appInfoResult.primaryName}</span>!&quot;`</span>);</code></pre>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`&quot;Got information for <span class="hljs-subst">${appInfoResult.primaryName}</span>!&quot;`</span>);
+</code></pre>
 				<a href="#deleting-a-submission" id="deleting-a-submission" style="color: inherit; text-decoration: none;">
 					<h5>Deleting a Submission</h5>
 				</a>
@@ -114,7 +119,8 @@
 
 <span class="hljs-keyword">if</span>(submissionPending){
    <span class="hljs-keyword">const</span> getSubmissionStatusResult = <span class="hljs-keyword">await</span> devCenter.DeleteSubmission(appId, submissionId);
-}</code></pre>
+}
+</code></pre>
 				<a href="#starting-a-new-submission" id="starting-a-new-submission" style="color: inherit; text-decoration: none;">
 					<h5>Starting a new submission</h5>
 				</a>
@@ -123,7 +129,8 @@
 <span class="hljs-keyword">const</span> createSubmissionResult = <span class="hljs-keyword">await</span> devCenter.CreateAppSubmission(appId);
 
 <span class="hljs-comment">// Grab the submission ID for use in the rest of the workflow.</span>
-<span class="hljs-keyword">const</span> submissionId = createSubmissionResult.Id;</code></pre>
+<span class="hljs-keyword">const</span> submissionId = createSubmissionResult.Id;
+</code></pre>
 				<a href="#updating-the-submission-with-the-submission-data" id="updating-the-submission-with-the-submission-data" style="color: inherit; text-decoration: none;">
 					<h5>Updating the submission with the Submission Data</h5>
 				</a>
@@ -137,7 +144,8 @@
 clonedSubmission.applicationPackages[<span class="hljs-number">0</span>].fileName = <span class="hljs-string">&quot;PathInZip/MyApp_x86_bundle.appxupload&quot;</span>
 
 <span class="hljs-comment">// Update the submissino with the new app data</span>
-<span class="hljs-keyword">const</span> updateResult = <span class="hljs-keyword">await</span> dev.UpdateSubmission(appId, submissionId, clonedSubmission);</code></pre>
+<span class="hljs-keyword">const</span> updateResult = <span class="hljs-keyword">await</span> dev.UpdateSubmission(appId, submissionId, clonedSubmission);
+</code></pre>
 				<blockquote>
 					<p>If you would like to alter more than just the package file, see the </p>
 				</blockquote>
@@ -172,7 +180,8 @@ clonedSubmission.applicationPackages[<span class="hljs-number">0</span>].fileNam
 				</a>
 				<p>You can check the status of a submission with the following method</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// SubmissionId and AppId are from previous steps</span>
-<span class="hljs-keyword">const</span> statusResult = <span class="hljs-keyword">await</span> dc.GetSubmissionStatus(appId, submissionId)</code></pre>
+<span class="hljs-keyword">const</span> statusResult = <span class="hljs-keyword">await</span> dc.GetSubmissionStatus(appId, submissionId)
+</code></pre>
 				<p>This could be used to poll a submission as it returns value for every stage of the submission, including failures. See</p>
 				<a href="#service-principal-and-authentication" id="service-principal-and-authentication" style="color: inherit; text-decoration: none;">
 					<h2>Service Principal and Authentication</h2>
@@ -259,7 +268,8 @@ clonedSubmission.applicationPackages[<span class="hljs-number">0</span>].fileNam
   Certification
   CertificationFailed
   Release
-  ReleaseFailed</code></pre>
+  ReleaseFailed
+</code></pre>
 				<a href="#applicationdata-interface" id="applicationdata-interface" style="color: inherit; text-decoration: none;">
 					<h2><code>ApplicationData</code> Interface</h2>
 				</a>
