@@ -34,7 +34,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           npm ci
-          npm run publish
+          npm run rebuild
+          npm pack
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -49,6 +51,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: |
           npm ci
-          npm run publish
+          npm run rebuild
+          npm pack
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
