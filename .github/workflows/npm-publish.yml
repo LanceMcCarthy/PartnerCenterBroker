@@ -3,7 +3,7 @@ name: Package And Distribute
 on:
   push:
     branches:
-      - releases/*
+      - 'releases/*'
     paths-ignore:
       - '**/*.md'
       - '**/*.gitignore'
