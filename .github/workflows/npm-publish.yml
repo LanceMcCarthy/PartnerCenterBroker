@@ -10,6 +10,7 @@ on:
       - '**/*.gitattributes'
 
 jobs:
+# Verify everything builds and tests pass before we run any publishing steps
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -17,18 +18,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - run: npm ci
       - run: |
-          npm run rebuild
+          npm ci
+          npm run prep
           npm run test
-        env:
-          PARTNER_CENTER_TENANT_ID: ${{ secrets.TENANT_ID }}
-          PARTNER_CENTER_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          PARTNER_CENTER_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          PARTNER_CENTER_APP_ID: ${{ secrets.DVLUP_PWA_APP_ID }}
 
   publish-npm:
-    needs: build
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -36,13 +32,14 @@ jobs:
         with:
           node-version: '14'
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run publish
+      - run: |
+          npm ci
+          npm run publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-gpr:
-    needs: build
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
