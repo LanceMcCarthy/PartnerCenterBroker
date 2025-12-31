@@ -9,8 +9,54 @@ import {
   CreateAppSubmissionResult,
   AppResourceResult,
   UpdateSubmissionResult,
-  SubmissionData
+  SubmissionData,
+  ApplicationSubmission,
+  AllowTargetFutureDeviceFamilies,
+  ApplicationPackage,
+  Listings,
+  PackageDeliveryOptions,
+  Pricing,
+  StatusDetails,
+  EnUs,
+  BaseListing,
+  Image,
+  PlatformOverrides,
+  Windows81,
+  PackageRollout,
+  MarketSpecificPricings
 } from './interfaces';
+
+/**
+ * @namespace DevCenter
+ */
+
+// Re-export types so typedoc can document them
+declare namespace DevCenter {
+  export type {
+    ServiceAuthenticationResult,
+    CommitSubmissionResult,
+    CreateAppSubmissionResult,
+    AppResourceResult,
+    GetSubmissionResult,
+    SubmissionStatusResult,
+    UpdateSubmissionResult,
+    SubmissionData,
+    ApplicationSubmission,
+    AllowTargetFutureDeviceFamilies,
+    ApplicationPackage,
+    Listings,
+    PackageDeliveryOptions,
+    Pricing,
+    StatusDetails,
+    EnUs,
+    BaseListing,
+    Image,
+    PlatformOverrides,
+    Windows81,
+    PackageRollout,
+    MarketSpecificPricings
+  };
+}
 
 // Partner Center API https://docs.microsoft.com/en-us/windows/uwp/monetize/create-and-manage-submissions-using-windows-store-services
 // API endpoints https://docs.microsoft.com/en-us/windows/uwp/monetize/manage-app-submissions
@@ -287,9 +333,10 @@ class DevCenter {
       } else {
         return this.authResult;
       }
-    } catch (ex) {
+    } catch (ex1) {
       try {
-        if (ex.statusCode === 401) {
+        const error = ex1 as any;
+        if (error.statusCode === 401) {
           // If we got a 401 during a call, we need to get a new token anyways.
           this.authResult = await this.signin();
 
@@ -298,19 +345,19 @@ class DevCenter {
           } else {
             return this.authResult;
           }
-        } else if (ex.statusCode === 400) {
+        } else if (error.statusCode === 400) {
           throw console.error('400 - The request parameters are invalid.');
-        } else if (ex.statusCode === 404) {
+        } else if (error.statusCode === 404) {
           throw console.error('404 - The specified submission could not be found.');
-        } else if (ex.statusCode === 409) {
+        } else if (error.statusCode === 409) {
           throw console.error(
             'Error 409 - The specified submission was found but it could not be committed in its current state, or the app uses a Partner Center feature that is currently not supported by the Microsoft Store submission API.'
           );
         } else {
-          throw console.error(ex.statusMessage);
+          throw console.error(error.statusMessage);
         }
-      } catch (ex) {
-        throw ex;
+      } catch (ex2) {
+        throw ex2;
       }
     }
   }

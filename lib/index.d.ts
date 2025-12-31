@@ -1,4 +1,10 @@
-import { GetSubmissionResult, SubmissionStatusResult, ServiceAuthenticationResult, CommitSubmissionResult, CreateAppSubmissionResult, AppResourceResult, UpdateSubmissionResult, SubmissionData } from './interfaces';
+import { GetSubmissionResult, SubmissionStatusResult, ServiceAuthenticationResult, CommitSubmissionResult, CreateAppSubmissionResult, AppResourceResult, UpdateSubmissionResult, SubmissionData, ApplicationSubmission, AllowTargetFutureDeviceFamilies, ApplicationPackage, Listings, PackageDeliveryOptions, Pricing, StatusDetails, EnUs, BaseListing, Image, PlatformOverrides, Windows81, PackageRollout, MarketSpecificPricings } from './interfaces';
+/**
+ * @namespace DevCenter
+ */
+declare namespace DevCenter {
+    export type { ServiceAuthenticationResult, CommitSubmissionResult, CreateAppSubmissionResult, AppResourceResult, GetSubmissionResult, SubmissionStatusResult, UpdateSubmissionResult, SubmissionData, ApplicationSubmission, AllowTargetFutureDeviceFamilies, ApplicationPackage, Listings, PackageDeliveryOptions, Pricing, StatusDetails, EnUs, BaseListing, Image, PlatformOverrides, Windows81, PackageRollout, MarketSpecificPricings };
+}
 declare class DevCenter {
     tenantId: string;
     clientId: string;
