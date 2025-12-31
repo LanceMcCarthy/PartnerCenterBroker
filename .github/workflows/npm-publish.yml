@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write  # npm OIDC
-  contents: read
+  id-token: write # for npm OIDC
+  contents: write # for github releases
+  packages: write # for github package registry
 
 jobs:
   test:
@@ -13,9 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: '24'
+
       - run: |
           npm ci
           npm install
@@ -25,20 +28,22 @@ jobs:
     name: Publish to npm.pkg.github.com
     needs: test
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # needed to create a release
+    env:
+      NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: '24'
           registry-url: https://npm.pkg.github.com/
-      - run: |
+
+      - name: Publish
+        run: |
           npm ci
           npm install
-          npm run publish  # still need to use GITHUB_TOKEN
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          npm run publish
 
       - id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
@@ -51,8 +56,6 @@ jobs:
       - name: Create GitHub release
         id: create-release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           tag_name: v${{steps.package-version.outputs.version}}
           release_name: v${{steps.package-version.outputs.version}}
@@ -61,8 +64,6 @@ jobs:
 
       - name: Upload package to release
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           upload_url: ${{steps.create-release.outputs.upload_url}}
           asset_path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
@@ -75,11 +76,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: '24'
           registry-url: https://registry.npmjs.org/
-      - run: |
+
+      - name: Publish
+        run: |
           npm ci
           npm install
           npm run publish   # OIDC is configured in npmjs.org
