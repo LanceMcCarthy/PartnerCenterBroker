@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: '24'
 
-      - run: |
+      - name: Run tests
+        run: |
           npm ci
           npm install
           npm run prep
@@ -43,7 +44,9 @@ jobs:
         run: |
           npm ci
           npm install
-          npm run publish
+          npm run package
+          npm publish --registry=https://npm.pkg.github.com/
+          npm run publish-docs
 
       - id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
@@ -82,8 +85,15 @@ jobs:
           node-version: '24'
           registry-url: https://registry.npmjs.org/
 
+      - name: Delete existing version if present
+        continue-on-error: true
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          npm unpublish partner-center-broker@$VERSION --registry=https://registry.npmjs.org/ || true
+
       - name: Publish
         run: |
           npm ci
-          npm install
-          npm run publish   # OIDC is configured in npmjs.org
+          npm run package
+          npm publish --registry=https://registry.npmjs.org/
+          npm run publish-docs
