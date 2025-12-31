@@ -40,12 +40,16 @@ jobs:
           node-version: '24'
           registry-url: https://npm.pkg.github.com/
 
+      - name: Scope package name for GPR
+        run: |
+          node -e "const pkg=require('./package.json'); pkg.name='@LanceMcCarthy/partner-center-broker'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
+
       - name: Publish
         run: |
           npm ci
           npm install
           npm run package
-          npm publish --registry=https://npm.pkg.github.com/
+          npm publish
           npm run publish-docs
 
       - id: package-version
