@@ -40,6 +40,8 @@ jobs:
     name: Publish to npm.pkg.github.com
     needs: build-and-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to create a release
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -60,3 +62,26 @@ jobs:
         with:
           name: partner-center-broker-v${{steps.package-version.outputs.version}}
           path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
+
+      - name: Create GitHub release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: v${{steps.package-version.outputs.version}}
+          release_name: v${{steps.package-version.outputs.version}}
+          draft: false
+          prerelease: false
+
+      - name: Upload package to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{steps.create-release.outputs.upload_url}}
+          asset_path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
+          asset_name: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
+          asset_content_type: application/gzip
+
+      
