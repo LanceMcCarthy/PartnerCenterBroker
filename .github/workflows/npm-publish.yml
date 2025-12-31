@@ -24,8 +24,8 @@ jobs:
           node-version: '24'
       - run: |
           npm ci
+          npm install
           npm run prep
-          npm run test
 
   publish-npm:
     needs: build-and-test
@@ -38,9 +38,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           npm ci
-          npm run rebuild
-          npm pack
-          npm publish   # OIDC is configured in npmjs.org
+          npm install
+          npm run publish   # OIDC is configured in npmjs.org
 
   publish-gpr:
     needs: build-and-test
@@ -53,8 +52,15 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: |
           npm ci
-          npm run rebuild
-          npm pack
-          npm publish  # still need to use GITHUB_TOKEN
+          npm install
+          npm run publish  # still need to use GITHUB_TOKEN
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: partner-center-broker-v${{steps.package-version.outputs.version}}
+          path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
