@@ -9,6 +9,10 @@ on:
       - '**/*.gitignore'
       - '**/*.gitattributes'
 
+permissions:
+  id-token: write  # npm OIDC
+  contents: read
+
 jobs:
 # Verify everything builds and tests pass before we run any publishing steps
   build-and-test:
@@ -17,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '24'
       - run: |
           npm ci
           npm run prep
@@ -30,15 +34,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '24'
           registry-url: https://registry.npmjs.org/
       - run: |
           npm ci
           npm run rebuild
           npm pack
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          npm publish   # OIDC is configured in npmjs.org
 
   publish-gpr:
     needs: build-and-test
@@ -47,12 +49,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '24'
           registry-url: https://npm.pkg.github.com/
       - run: |
           npm ci
           npm run rebuild
           npm pack
-          npm publish
+          npm publish  # still need to use GITHUB_TOKEN
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
