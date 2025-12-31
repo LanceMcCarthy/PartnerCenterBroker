@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-# Verify everything builds and tests pass before we run any publishing steps
-  build-and-test:
+  test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,24 +21,9 @@ jobs:
           npm install
           npm run prep
 
-  publish-npm:
-    name: Publish to npmjs.org
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '24'
-          registry-url: https://registry.npmjs.org/
-      - run: |
-          npm ci
-          npm install
-          npm run publish   # OIDC is configured in npmjs.org
-
   publish-gpr:
     name: Publish to npm.pkg.github.com
-    needs: build-and-test
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: write  # needed to create a release
@@ -84,4 +69,17 @@ jobs:
           asset_name: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
           asset_content_type: application/gzip
 
-      
+  publish-npm:
+    name: Publish to npmjs.org
+    needs: [test, publish-gpr]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org/
+      - run: |
+          npm ci
+          npm install
+          npm run publish   # OIDC is configured in npmjs.org
