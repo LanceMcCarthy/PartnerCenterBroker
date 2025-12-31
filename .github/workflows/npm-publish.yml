@@ -1,13 +1,7 @@
-name: Package And Distribute
+name: Publish Packages
 
 on:
-  push:
-    branches:
-      - 'releases/*'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
+  workflow_dispatch:
 
 permissions:
   id-token: write  # npm OIDC
@@ -28,6 +22,7 @@ jobs:
           npm run prep
 
   publish-npm:
+    name: Publish to npmjs.org
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
@@ -42,6 +37,7 @@ jobs:
           npm run publish   # OIDC is configured in npmjs.org
 
   publish-gpr:
+    name: Publish to npm.pkg.github.com
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
