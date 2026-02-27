@@ -2,6 +2,13 @@
 
 A library that lets you use the Microsoft Partner Center (aka DevCenter) APIs to manage your packaged application submissions. Take a look at the [Documentation and API Reference](https://lancemccarthy.github.io/PartnerCenterBroker/) for the latest info.
 
+| Workflow | Status |
+|----------|--------|
+| Main (smoke test) | [![Main](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/main.yml/badge.svg)](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/main.yml) |
+| Publish Packages | [![Publish Packages](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/npm-publish.yml) |
+| Docs Deploy | [![pages-build-deployment](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LanceMcCarthy/PartnerCenterBroker/actions/workflows/pages/pages-build-deployment)|
+
+> [!NOTE]
 > This project is still experimental and not production-ready for all scenarios. If you would like a production-ready library, take a look at all the available options here https://docs.microsoft.com/en-us/partner-center/develop/
   
 ## Usage
