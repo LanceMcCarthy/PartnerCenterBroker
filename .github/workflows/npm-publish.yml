@@ -24,28 +24,20 @@ jobs:
         run: |
           buildDay=`date +%Y.%m%d`
           tags="$buildDay.$GITHUB_RUN_NUMBER"
-          echo "VERSION_TAG=$tags" >> $GITHUB_OUTPUT
+          echo "version_number=$tags" >> $GITHUB_OUTPUT
 
-      - name: Build, test, pack and publish
-        run: |
-          npm ci
-          npm run format-write
-          npm run test
-          npm run generate-docs
-          npm pack
-          npm publish --access public
-          npm run publish-docs
+      - name: Update package.json version
+        run: npm version --no-git-tag-version "${{steps.version-creator.outputs.version_number}}"
 
-      - name: Get package version number
-        id: package-version
-        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+      - name: Prep and Publish
+        run: npm run publish-gh-actions
 
       - uses: actions/upload-artifact@v6
         with:
-          name: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
-          path: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
+          name: "lancemccarthy-partner-center-broker-${{steps.version-creator.outputs.version_number}}.tgz"
+          path: "lancemccarthy-partner-center-broker-${{steps.version-creator.outputs.version_number}}.tgz"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
+          files: "lancemccarthy-partner-center-broker-${{steps.version-creator.outputs.version_number}}.tgz"
