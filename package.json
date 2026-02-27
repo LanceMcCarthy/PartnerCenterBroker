@@ -1,6 +1,6 @@
 {
-  "name": "partner-center-broker",
-  "version": "1.2.1",
+  "name": "@lancemccarthy/partner-center-broker",
+  "version": "2026.227.0",
   "description": "A helper library that lets you manage your Microsoft Partner Center application submissions.",
   "main": "./lib/devCenter.js",
   "types": "./lib/devCenter.d.ts",
@@ -16,10 +16,6 @@
     "prep": "npm run rebuild && npm run format-write && npm run test && npm run generate-docs",
     "package": "npm run prep && npm pack",
     "local-publish": "npm run package && npm publish && npm run publish-docs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/LanceMcCarthy/PartnerCenterBroker.git"
   },
   "keywords": [
     "StoreBroker",
@@ -38,10 +34,14 @@
   ],
   "author": "Lance McCarthy",
   "license": "GPL-3.0",
+  "homepage": "https://github.com/LanceMcCarthy/PartnerCenterBroker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LanceMcCarthy/PartnerCenterBroker.git"
+  },
   "bugs": {
     "url": "https://github.com/LanceMcCarthy/PartnerCenterBroker/issues"
   },
-  "homepage": "https://github.com/LanceMcCarthy/PartnerCenterBroker#readme",
   "dependencies": {
     "got": "^11.5.2",
     "jest-junit": "^11.1.0"
