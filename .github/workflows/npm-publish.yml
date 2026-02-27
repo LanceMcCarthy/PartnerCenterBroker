@@ -8,71 +8,44 @@ permissions:
   contents: write # for github releases
 
 jobs:
-  test:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '24'
-      - name: Run tests
-        run: |
-          npm ci
-          npm install
-          npm run prep
-
-
   publish-npm:
     name: Publish to npmjs.org
-    needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: https://registry.npmjs.org/
 
-      - name: Delete existing version if present
-        continue-on-error: true
+      - name: Generate version number with date and workflow Run Number
+        id: version-creator
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          npm unpublish partner-center-broker@$VERSION --registry=https://registry.npmjs.org/ || true
+          buildDay=`date +%Y.%m%d`
+          tags="$buildDay.$GITHUB_RUN_NUMBER"
+          echo "VERSION_TAG=$tags" >> $GITHUB_OUTPUT
 
-      - name: Publish
+      - name: Build, test, pack and publish
         run: |
           npm ci
-          npm run package
-          npm publish --registry=https://registry.npmjs.org/
+          npm run format-write
+          npm run test
+          npm run generate-docs
+          npm pack
+          npm publish --access public
           npm run publish-docs
 
       - name: Get package version number
         id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
-          name: partner-center-broker-v${{steps.package-version.outputs.version}}
-          path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
+          name: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
+          path: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
 
-      - name: Create GitHub release
-        id: create-release
-        uses: actions/create-release@v1
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{steps.package-version.outputs.version}}
-          release_name: v${{steps.package-version.outputs.version}}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Upload package to release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{steps.create-release.outputs.upload_url}}
-          asset_path: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
-          asset_name: partner-center-broker-${{steps.package-version.outputs.version}}.tgz
-          asset_content_type: application/gzip
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          files: "lancemccarthy-partner-center-broker-${{steps.package-version.outputs.version}}.tgz"
