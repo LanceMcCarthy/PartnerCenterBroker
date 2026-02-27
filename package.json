@@ -16,8 +16,8 @@
     "prep": "npm run rebuild && npm run format-write && npm run test && npm run docs-generate",
     "package": "npm run prep && npm pack",
     "publish-docs": "npm run docs-generate && gh-pages -d docs -t",
-    "publish-local": "npm run package && npm publish && npm run publish-docs",
-    "publish-gh-actions": "npm ci && npm run prep && npm publish --access public && gh-pages -d docs -t"
+    "publish-from-local-cli": "npm run package && npm publish && npm run publish-docs",
+    "publish-gh-actions": "npm ci && npm run prep && npm publish --access public"
   },
   "keywords": [
     "StoreBroker",
