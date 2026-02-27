@@ -9,13 +9,15 @@
     "build": "tsc",
     "rebuild": "npm run clean && npm run build",
     "test": "jest",
-    "generate-docs": "node -e \"require('fs').rmSync('docs', { recursive: true, force: true })\" && typedoc src/ --out docs --excludePrivate",
-    "publish-docs": "npm run generate-docs && gh-pages -d docs -t",
+    "docs-clean": "node -e \"require('fs').rmSync('docs', { recursive: true, force: true })\"",
+    "docs-generate": "npm run docs-clean && typedoc src/ --out docs --excludePrivate",
     "format-write": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
-    "prep": "npm run rebuild && npm run format-write && npm run test && npm run generate-docs",
+    "prep": "npm run rebuild && npm run format-write && npm run test && npm run docs-generate",
     "package": "npm run prep && npm pack",
-    "local-publish": "npm run package && npm publish && npm run publish-docs"
+    "publish-docs": "npm run docs-generate && gh-pages -d docs -t",
+    "publish-local": "npm run package && npm publish && npm run publish-docs",
+    "publish-gh-actions": "npm ci && npm run prep && npm publish --access public && gh-pages -d docs -t"
   },
   "keywords": [
     "StoreBroker",
