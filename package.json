@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('lib', { recursive: true, force: true })\"",
     "build": "tsc",
-    "rebuild": "node -e \"require('fs').rmSync('lib', { recursive: true, force: true })\" && tsc",
+    "rebuild": "npm run clean && npm run build",
     "test": "jest",
     "generate-docs": "node -e \"require('fs').rmSync('docs', { recursive: true, force: true })\" && typedoc src/ --out docs --excludePrivate",
     "publish-docs": "npm run generate-docs && gh-pages -d docs -t",
