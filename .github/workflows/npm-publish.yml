@@ -29,18 +29,16 @@ jobs:
       - name: Update package.json version
         run: npm version --no-git-tag-version "${{steps.version-creator.outputs.version_number}}"
 
-      - name: Configure Git identity for CI commits
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Prep and Publish
         run: npm run publish-gh-actions
-        env:
-          GIT_AUTHOR_NAME: github-actions[bot]
-          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-          GIT_COMMITTER_NAME: github-actions[bot]
-          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Publish docs to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ github.token }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true
 
       - uses: actions/upload-artifact@v6
         with:
